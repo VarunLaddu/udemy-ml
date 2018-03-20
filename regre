@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Sep  3 12:43:44 2017
+
+@author: varun
+"""
+
+import seaborn as sb
+import numpy as np
+import matplotlib.pyplot as mp
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+USA=pd.read_csv('USA_Housing.csv')
+#sb.distplot(USA['Price'])
+#sb.heatmap(data=USA.corr())
+
+X = USA[['Avg. Area Income', 'Avg. Area House Age', 'Avg. Area Number of Rooms',
+               'Avg. Area Number of Bedrooms', 'Area Population']]
+y = USA['Price']
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=101)
+lm=LinearRegression()
+lm.fit(X_train,y_train)
+print(lm.intercept_)
+print(lm.coef_)
+xcoef=pd.DataFrame(lm.coef_,X_train.columns,columns=['Coeffi'])
+print(xcoef)
+predict=lm.predict(X_test)
+print(predict)
+#mp.scatter(y=y_test,x=predict)
+#sb.regplot(predict,y_test)
+sb.distplot(y_test-predict,bins=50)

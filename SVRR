@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep  8 12:30:32 2017
+
+@author: varun
+"""
+
+import pandas as pd
+import numpy as np
+import seaborn as sb
+import matplotlib.pyplot as mp
+
+
+#importing data from csv files and splitting into dependent x and independent y
+dd=pd.read_csv('/home/varun/Position_Salaries.csv')
+X=dd.iloc[:,1:2].values
+y = dd.iloc[:, -1].values
+
+#encoding categorial data (preprocessing)
+from sklearn.preprocessing import StandardScaler
+sc_X = StandardScaler()
+X = sc_X.fit_transform(X)
+sc_y = StandardScaler()
+y = sc_y.fit_transform(y)
+
+#Training and test set is not required and no scaling is also required
+
+'''from sklearn.linear_model import LinearRegression
+lin=LinearRegression()
+lin.fit(X,y)'''
+
+from sklearn.svm import SVR
+svr= SVR(kernel='rbf')
+svr.fit(X,y)
+predic= sc_y.inverse_transform(svr.predict(sc_X.transform(np.array([[6.5]]))))
+
+print(predic[0])
+mp.scatter(X,y)
+mp.plot(X,svr.predict(X),color='yellow')
+mp.show()
